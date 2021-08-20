@@ -1,6 +1,7 @@
 const gameGrid = document.querySelector('.game-grid')
 const currentSnake = [2, 1, 0];
 const squares = [];
+const apples = [25];
 let direction = 1;
 const width = 10;
 
@@ -16,8 +17,13 @@ function makeGrid() {
 }
 
 
-function renderSnake() {
+function render() {
     currentSnake.forEach(index => squares[index].classList.add('snake'));
+    apples.forEach(index => squares[index].classList.add('apples'));
+}
+
+function checkCollision() {
+    
 }
 
 function moveSnake() {
@@ -44,4 +50,4 @@ document.addEventListener('keydown', control);
 const timerID = setInterval(moveSnake, 1000);
 
 makeGrid();
-renderSnake();
+render();
