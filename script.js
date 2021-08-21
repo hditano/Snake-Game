@@ -1,14 +1,29 @@
 const gameGrid = document.querySelector('.game-grid')
 const scoreText = document.querySelector('.score');
-const currentSnake = [2, 1, 0];
+const startGameButton = document.querySelector('.start-game');
+let currentSnake = [2, 1, 0];
 const squares = [];
-const apples = [2];
 let direction = 1;
 const width = 10;
-let numberApples = 1;
 let appleIndex = 0;
 let score = 0;
+let intervalTime = 1000;
 
+startGameButton.addEventListener('click', startGame);
+
+function startGame() {
+    currentSnake.forEach(index => squares[index].classList.remove('snake'));
+    squares[appleIndex].classList.remove('apples');
+    clearInterval(timerID);
+    currentSnake = [2,1,0];
+    score = 0;
+    scoreText.textContent = score;
+    direction = 1;
+    intervalTime = 1000;
+    generateApples();
+    currentSnake.forEach(index => squares[index].classList.add('snakes'));
+    timerID = setInterval(moveSnake, intervalTime);
+}
 
 function makeGrid() {
     for (let i = 0; i < 100; i++) {
@@ -32,9 +47,6 @@ function render() {
     currentSnake.forEach(index => squares[index].classList.add('snake'));
 }
 
-function checkCollision() {
-
-}
 
 function moveSnake() {
 
@@ -51,7 +63,7 @@ function moveSnake() {
         return clearInterval(timerID)
     }
 
-    
+
     let tail = currentSnake.pop();
     squares[tail].classList.remove('snake');
     currentSnake.unshift(currentSnake[0] + direction);
@@ -82,9 +94,8 @@ function control(e) {
 
 document.addEventListener('keydown', control);
 
-const timerID = setInterval(moveSnake, 500);
+let timerID = setInterval(moveSnake, 500);
 
 makeGrid();
 render();
-checkCollision();
 generateApples();
