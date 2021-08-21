@@ -1,10 +1,11 @@
 const gameGrid = document.querySelector('.game-grid')
 const currentSnake = [2, 1, 0];
 const squares = [];
-const apples = [25, 55];
+const apples = [2];
 let direction = 1;
 const width = 10;
-let numberApples = 10;
+let numberApples = 1;
+let appleIndex = 0;
 
 
 function makeGrid() {
@@ -17,11 +18,12 @@ function makeGrid() {
 
 }
 
-function createApples(numberApples) {
-    for (let i = 0; i < numberApples; i++) {
-        let randomApples = Math.floor(Math.random() * squares.length + 1);
-        apples.forEach(index => squares[randomApples].classList.add('apples'));
-    }
+function generateApples() {
+    do {
+        appleIndex = Math.floor(Math.random() * squares.length);
+
+    } while (squares[appleIndex].classList.contains('snake'));
+    squares[appleIndex].classList.add('apples');
 }
 
 function render() {
@@ -30,14 +32,31 @@ function render() {
 
 function checkCollision() {
 
-    console.log(currentSnake.length - 1);
 }
 
 function moveSnake() {
+
+    // Checks for hitting walls 
+    if (
+        (currentSnake[0] + width >= width*width && direction === width) || //if snake has hit bottom
+        (currentSnake[0] % width === width-1 && direction === 1) || //if snake has hit right wall
+        (currentSnake[0] % width === 0 && direction === -1) || //if snake has hit left wall
+        (currentSnake[0] - width < 0 && direction === -width) || //if snake has hit top
+        squares[currentSnake[0] + direction].classList.contains('snake')
+    )
+    return clearInterval(timerID)
+
     let tail = currentSnake.pop();
     squares[tail].classList.remove('snake');
     currentSnake.unshift(currentSnake[0] + direction);
     squares[currentSnake[0]].classList.add('snake');
+
+    //Checks for hitting apple
+    if (squares[currentSnake[0]].classList.contains('apples')) {
+        squares[currentSnake[0]].classList.remove('apples');
+        currentSnake.push(currentSnake.length + 1);
+        generateApples();
+    }
 }
 
 function control(e) {
@@ -54,9 +73,9 @@ function control(e) {
 
 document.addEventListener('keydown', control);
 
-const timerID = setInterval(moveSnake, 1000);
+const timerID = setInterval(moveSnake, 500);
 
 makeGrid();
 render();
 checkCollision();
-createApples(numberApples);
+generateApples();
