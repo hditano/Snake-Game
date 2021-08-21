@@ -1,4 +1,5 @@
 const gameGrid = document.querySelector('.game-grid')
+const scoreText = document.querySelector('.score');
 const currentSnake = [2, 1, 0];
 const squares = [];
 const apples = [2];
@@ -6,6 +7,7 @@ let direction = 1;
 const width = 10;
 let numberApples = 1;
 let appleIndex = 0;
+let score = 0;
 
 
 function makeGrid() {
@@ -38,14 +40,18 @@ function moveSnake() {
 
     // Checks for hitting walls 
     if (
-        (currentSnake[0] + width >= width*width && direction === width) || //if snake has hit bottom
-        (currentSnake[0] % width === width-1 && direction === 1) || //if snake has hit right wall
+        (currentSnake[0] + width >= width * width && direction === width) || //if snake has hit bottom
+        (currentSnake[0] % width === width - 1 && direction === 1) || //if snake has hit right wall
         (currentSnake[0] % width === 0 && direction === -1) || //if snake has hit left wall
         (currentSnake[0] - width < 0 && direction === -width) || //if snake has hit top
         squares[currentSnake[0] + direction].classList.contains('snake')
-    )
-    return clearInterval(timerID)
 
+    ) {
+        scoreText.textContent = `${score} You Lost!!`
+        return clearInterval(timerID)
+    }
+
+    
     let tail = currentSnake.pop();
     squares[tail].classList.remove('snake');
     currentSnake.unshift(currentSnake[0] + direction);
@@ -56,6 +62,9 @@ function moveSnake() {
         squares[currentSnake[0]].classList.remove('apples');
         currentSnake.push(currentSnake.length + 1);
         generateApples();
+        score += 1;
+        scoreText.textContent = score;
+
     }
 }
 
